@@ -1,9 +1,54 @@
-﻿@page "/"
+﻿@inject IJSRuntime JSRuntime
+
+@page "/"
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="text-center">
+    <h1>Drink Water Reminder</h1>
+    <div class="mt-5">
+        <h2>@CurrentTime.ToString("HH:mm:ss")</h2>
+        @if (TimeForNextReminder is not null)
+        {
+            <h5>
+                Your next glass of water will be in:
+                @($"{TimeForNextReminder?.Minutes:00}:{TimeForNextReminder?.Seconds:00}")
+            </h5>
+        }
+    </div>
+</div>
 
-Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code {
+    DateTime CurrentTime = DateTime.Now;
+    TimeSpan? TimeForNextReminder;
+    protected override void OnInitialized()
+    {
+        StartTimer();
+    }
+
+    void StartTimer()
+    {
+        Timer? timer = new(UpdateTime, new AutoResetEvent(false), 0, 1000);
+    }
+
+    void UpdateTime(object? stateInfo)
+    {
+        CurrentTime = DateTime.Now;
+        if (CurrentTime.Minute is 2 or 0 && CurrentTime.Second == 0)
+            _ = JSRuntime.InvokeVoidAsync("window.blazorPushNotifications.sendNotification");
+
+        var nextReminder = GetNextReminder(CurrentTime);
+        TimeForNextReminder = nextReminder.Subtract(CurrentTime);
+        StateHasChanged();
+    }
+
+    DateTime GetNextReminder(DateTime currentTime)
+    {
+        if (currentTime.Minute > 30)
+            return new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, currentTime.Hour + 1, 0, 0);
+
+        return new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, currentTime.Hour, 30, 0);
+    }
+
+}

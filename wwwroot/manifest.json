@@ -1,0 +1,14 @@
+{
+  "short_name": "Drink Water Reminder",
+  "name": "Drink Water Reminder",
+  "start_url": "/",
+  "display": "standalone",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ]
+}

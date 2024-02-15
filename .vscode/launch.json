@@ -1,11 +1,35 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Launch and Debug Standalone Blazor WebAssembly App",
-            "type": "blazorwasm",
-            "request": "launch",
-            "cwd": "${workspaceFolder}"
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": ".NET Core Attach",
+      "type": "coreclr",
+      "request": "attach"
+    },
+    {
+      "name": "Watch",
+      "type": "coreclr",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "program": "dotnet",
+      "args": ["watch", "--project", ".", "--verbose"],
+      "preLaunchTask": "build",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Attach",
+      "type": "blazorwasm",
+      "request": "attach",
+      "cwd": "${workspaceFolder}",
+      "url": "http://localhost:5235",
+      "timeout": 120000,
+      "browser": "chrome"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug with Hot Reload",
+      "configurations": ["Watch", "Attach"]
+    }
+  ]
 }
