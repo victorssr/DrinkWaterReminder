@@ -35,8 +35,11 @@
     void UpdateTime(object? stateInfo)
     {
         CurrentTime = DateTime.Now;
-        if (CurrentTime.Minute is 2 or 0 && CurrentTime.Second == 0)
+        if (CurrentTime.Minute is 30 or 0 && CurrentTime.Second == 0)
+        {
             _ = JSRuntime.InvokeVoidAsync("window.blazorPushNotifications.sendNotification");
+            Console.WriteLine($"Notification sent! {CurrentTime}");
+        }
 
         var nextReminder = GetNextReminder(CurrentTime);
         TimeForNextReminder = nextReminder.Subtract(CurrentTime);
@@ -45,7 +48,7 @@
 
     DateTime GetNextReminder(DateTime currentTime)
     {
-        if (currentTime.Minute > 30)
+        if (currentTime.Minute >= 30)
             return new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, currentTime.Hour + 1, 0, 0);
 
         return new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, currentTime.Hour, 30, 0);
