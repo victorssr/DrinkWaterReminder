@@ -16,6 +16,12 @@
             </h5>
         }
     </div>
+
+    <div class="mt-5">
+        <button class="btn btn-primary" @onclick="SendTestNotification">
+            Check your notification
+        </button>
+    </div>
 </div>
 
 
@@ -54,4 +60,8 @@
         return new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, currentTime.Hour, 30, 0);
     }
 
+    void SendTestNotification()
+    {
+        _ = JSRuntime.InvokeVoidAsync("window.blazorPushNotifications.sendNotification");
+    }
 }
