@@ -22,12 +22,38 @@
             Check your notification
         </button>
     </div>
+
+    <div class="mt-5">
+        <h3>You're already drunk @(waterDrunk) liters of water.</h3>
+    </div>
+
+    @if (DrinkWater)
+    {
+        <div class="mt-5">
+            <span>Did you drink the water?</span>
+        </div>
+        <div class="mt-2 d-flex justify-content-center">
+            <div>
+                <button class="btn btn-success" @onclick="RecognizeWaterDrunk">
+                    Yes! I'm hydrated
+                </button>
+            </div>
+            <div class="ml-3">
+                <button class="btn btn-danger" @onclick="RecognizeNoWaterDrunk">
+                    No, and I won't!
+                </button>
+            </div>
+        </div>
+    }
 </div>
 
 
 @code {
     DateTime CurrentTime = DateTime.Now;
     TimeSpan? TimeForNextReminder;
+    bool DrinkWater = true;
+    double waterDrunk = 0;
+
     protected override void OnInitialized()
     {
         StartTimer();
@@ -44,6 +70,7 @@
         if (CurrentTime.Minute is 30 or 0 && CurrentTime.Second == 0)
         {
             _ = JSRuntime.InvokeVoidAsync("window.blazorPushNotifications.sendNotification");
+            DrinkWater = true;
             Console.WriteLine($"Notification sent! {CurrentTime}");
         }
 
@@ -63,5 +90,16 @@
     void SendTestNotification()
     {
         _ = JSRuntime.InvokeVoidAsync("window.blazorPushNotifications.sendNotification");
+    }
+
+    void RecognizeWaterDrunk()
+    {
+        DrinkWater = false;
+        waterDrunk += 0.2;
+    }
+
+    void RecognizeNoWaterDrunk()
+    {
+        DrinkWater = false;
     }
 }
